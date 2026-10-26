@@ -1,3 +1,4 @@
+
 name: Selenium Login Automation
 
 on:
@@ -9,8 +10,11 @@ on:
 jobs:
   login-tests:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
+
     env:
       SELENIUM_HEADLESS: "true"
+
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -23,4 +27,15 @@ jobs:
           cache: maven
 
       - name: Run Selenium login scenarios
-        run: mvn -B clean compile exec:java
+        run: |
+          set -o pipefail
+          mvn -B clean compile exec:java 2>&1 | tee test-results.txt
+
+      - name: Upload test results artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: selenium-login-test-results
+          path: test-results.txt
+          if-no-files-found: warn
+          retention-days: 14
