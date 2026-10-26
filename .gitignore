@@ -1,0 +1,9 @@
+/out/
+/target/
+*.class
+*.jar
+.vscode/
+.idea/
+CHANGELOG
+LICENSE
+NOTICE
